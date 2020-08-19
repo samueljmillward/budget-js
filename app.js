@@ -62,7 +62,7 @@ var UIController = (function () {
         inputValue: '.add__value',
         inputBtn: '.add__btn',
         incomeContainer: '.income__list',
-        expenseContainer: '.expense__list'
+        expensesContainer: '.expenses__list'
     };
 
     return {
