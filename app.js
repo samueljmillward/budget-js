@@ -62,7 +62,8 @@ var UIController = (function () {
         inputValue: '.add__value',
         inputBtn: '.add__btn',
         incomeContainer: '.income__list',
-        expensesContainer: '.expenses__list'
+        expensesContainer: '.expenses__list',
+        container: '.container'
     };
 
     return {
@@ -128,6 +129,8 @@ var controller = (function (budgetCtrl, UICtrl) {
                 ctrlAddItem();
             }
         });
+
+        document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
     };
 
     var ctrlAddItem = function () {
@@ -140,6 +143,19 @@ var controller = (function (budgetCtrl, UICtrl) {
         UICtrl.addListItem(newItem, input.type);
 
         UICtrl.clearFields();
+    };
+
+    var ctrlDeleteItem = function (e) {
+        var itemID, splitID, type, ID;
+
+        itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+
+        // splits 'inc-1' into ['inc', '1']
+        if (itemID) {
+            splitID = itemID.split('-');
+            type = splitID[0];
+            ID = splitID[1];
+        }
     };
 
     return {
