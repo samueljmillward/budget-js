@@ -1,5 +1,4 @@
 var budgetController = (function () {
-
     var Expense = function (id, description, value) {
         this.id = id;
         this.description = description;
@@ -59,8 +58,21 @@ var budgetController = (function () {
             return newItem
         },
 
-        calculateBudget: function () {
+        deleteItem: function (type, id) {
+            var ids, index;
 
+            ids = data.allItems[type].map(function (current) {
+                return current.id;
+            });
+
+            index = ids.indexOf(id);
+
+            if (index !== -1) {
+                data.allItems[type].splice(index, 1);
+            }
+        },
+
+        calculateBudget: function () {
             calculateTotal('exp');
             calculateTotal('inc');
 
@@ -70,7 +82,6 @@ var budgetController = (function () {
             } else {
                 data.percentage = -1;
             }
-
         },
 
         getBudget: function () {
@@ -215,13 +226,15 @@ var controller = (function (budgetCtrl, UICtrl) {
     var ctrlDeleteItem = function (e) {
         var itemID, splitID, type, ID;
 
-        itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+        itemID = e.target.parentNode.parentNode.parentNode.parentNode.id;
 
         // splits 'inc-1' into ['inc', '1']
         if (itemID) {
             splitID = itemID.split('-');
             type = splitID[0];
-            ID = splitID[1];
+            ID = parseInt(splitID[1]);
+
+            budgetCtrl.deleteItem(type, ID);
         }
     };
 
