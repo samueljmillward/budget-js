@@ -129,17 +129,19 @@ var budgetController = (function () {
 
 var UIController = (function () {
     var DOMstrings = {
-        inputType: '.add__type',
-        inputDescription: '.add__description',
-        inputValue: '.add__value',
-        inputBtn: '.add__btn',
+        inputType: ".add__type",
+        inputDescription: ".add__description",
+        inputValue: ".add__value",
+        inputBtn: ".add__btn",
         incomeContainer: '.income__list',
         expensesContainer: '.expenses__list',
         container: '.container',
         budgetLabel: '.budget__value',
         incomeLabel: '.budget__income--value',
         expensesLabel: '.budget__expenses--value',
-        percentageLabel: '.budget__expenses--percentage'
+        percentageLabel: '.budget__expenses--percentage',
+        expensesPercLabel: '.item__percentage',
+        dateLabel: '.budget__title--month'
     };
 
     return {
@@ -206,13 +208,27 @@ var UIController = (function () {
         },
 
         displayPercentages: function (percentages) {
+            var fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
 
+            var nodeListForEach = function (list, callback) {
+                for (var i = 0; i < list.length; i++) {
+                    callback(list[i], i);
+                }
+            };
+
+            nodeListForEach(fields, function (current, index) {
+                if (percentages[index] > 0) {
+                    current.textContent = percentages[index] + '%';
+                } else {
+                    current.textContent = '---';
+                }
+            });
         },
 
         getDOMstrings: function () {
             return DOMstrings;
         }
-    }
+    };
 })();
 
 var controller = (function (budgetCtrl, UICtrl) {
@@ -236,7 +252,7 @@ var controller = (function (budgetCtrl, UICtrl) {
 
         var percentages = budgetCtrl.getPercentages();
 
-        console.log(percentages);
+        UICtrl.displayPercentages(percentages);
     };
 
     var updateBudget = function () {
