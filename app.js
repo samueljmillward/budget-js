@@ -15,12 +15,23 @@ var budgetController = (function () {
     var data = {
         allItems: {
             exp: [],
-            inc: [],
+            inc: []
         },
         totals: {
             exp: 0,
             inc: 0
-        }
+        },
+        budget: 0,
+        percentage: -1
+    };
+
+    var calculateTotal = function (type) {
+        var sum = 0;
+
+        data.allItems[type].forEach(function (curr) {
+            sum += curr.value;
+        });
+        data.totals[type] = sum;
     };
 
     return {
@@ -46,6 +57,29 @@ var budgetController = (function () {
 
             // Return new item
             return newItem
+        },
+
+        calculateBudget: function () {
+
+            calculateTotal('exp');
+            calculateTotal('inc');
+
+            data.budget = data.totals.inc - data.totals.exp;
+            if (data.totals.inc > 0) {
+                data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+            } else {
+                data.percentage = -1;
+            }
+
+        },
+
+        getBudget: function () {
+            return {
+                budget: data.budget,
+                totalInc: data.totals.inc,
+                totalExp: data.totals.exp,
+                percentage: data.percentage
+            }
         },
 
         testing: function () {
@@ -134,6 +168,11 @@ var controller = (function (budgetCtrl, UICtrl) {
     };
 
     var updateBudget = function () {
+        budgetCtrl.calculateBudget();
+
+        var budget = budgetCtrl.getBudget();
+
+        console.log(budget);
 
     };
 
@@ -142,7 +181,7 @@ var controller = (function (budgetCtrl, UICtrl) {
 
         input = UICtrl.getInput();
 
-        if (input.description !== '' && !NaN(input.value) && input.value > 0) {
+        if (input.description !== '' && !isNaN(input.value) && input.value > 0) {
             newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
             UICtrl.addListItem(newItem, input.type);
